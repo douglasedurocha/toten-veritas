@@ -10,7 +10,7 @@ class Product extends GetView<CartController> {
 
   @override
   Widget build(BuildContext context){
-    final String formattedPrice = "R\$${product.price.toStringAsFixed(2)}";
+    final String formattedPrice = "R\$ ${product.price.toStringAsFixed(2)}";
 
     return Container(
       decoration: BoxDecoration(

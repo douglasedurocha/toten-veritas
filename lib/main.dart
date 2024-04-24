@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toten/bindings/bindings.dart';
-import 'package:toten/home.dart';
+import 'package:toten/views/ui/home.dart';
 
 void main() {
   GlobalBindings().dependencies();
