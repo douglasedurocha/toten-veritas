@@ -4,6 +4,7 @@ class ProductModel {
     required this.name,
     required this.price,
     this.inicialPrice = 0.0,
+    required this.category,
     required this.image,
     required this.quantity,
   });
@@ -12,6 +13,7 @@ class ProductModel {
   final String name;
   final double price;
   final double inicialPrice;
+  final String category;
   final String image;
   final int quantity;
 

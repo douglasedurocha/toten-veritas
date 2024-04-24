@@ -21,18 +21,21 @@ class _ShoppingSectionState extends State<ShoppingSection>
         id: 1,
         name: 'Hambúrguer',
         price: 15.00,
+        category: 'food',
         image: 'assets/product1.png',
         quantity: 10),
     ProductModel(
         id: 2,
         name: 'Refrigerante',
         price: 5.00,
+        category: 'drink',
         image: 'assets/product2.png',
         quantity: 10),
     ProductModel(
         id: 3,
         name: 'Coxinha',
         price: 4.00,
+        category: 'food',
         image: 'assets/product3.png',
         quantity: 5),
     // Add more products as needed

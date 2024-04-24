@@ -1,63 +1,115 @@
-// import 'package:sqflite/sqflite.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:path/path.dart';
-// import 'dart:io' as io;
-// import 'package:cart/cart_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-// class DBHelper {
+class DBHelper {
+  static final DBHelper _singleton = DBHelper.internal();
+  factory DBHelper() => _singleton;
+  static Database? _db;
+  DBHelper.internal();
+  static DBHelper shared() => _singleton;
 
-//   static Database? _db ;
+  static const String tbCart = 'cart';
+  static const String tbCartItem = 'cart_item';
+  static const String tbProduct = 'product';
 
-//   Future<Database?> get db async {
-//     if(_db != null){
-//       return _db!;
-//     }
+  static const String cartId = 'id';
 
-//     _db = await initDatabase();
-//   }
+  static const String cartItemId = 'id';
+  static const String cartItemCartId = 'cart_id';
+  static const String cartItemProductId = 'product_id';
 
-//   initDatabase()async{
-//     io.Directory documentDirectory = await getApplicationDocumentsDirectory() ;
-//     String path = join(documentDirectory.path , 'cart.db');
-//     var db = await openDatabase(path , version: 1 , onCreate: _onCreate,);
-//     return db ;
-//   }
+  static const String productId = 'id';
+  static const String productName = 'name';
+  static const String productPrice = 'price';
+  static const String productInicialPrice = 'inicial_price';
+  static const String productCategory = 'category';
+  static const String productImage = 'image';
+  static const String productQuantity = 'quantity';
 
-//   _onCreate (Database db , int version )async{
-//     await db
-//         .execute('CREATE TABLE cart (id INTEGER PRIMARY KEY , productId VARCHAR UNIQUE,productName TEXT,initialPrice INTEGER, productPrice INTEGER , quantity INTEGER, unitTag TEXT , image TEXT )');
-//   }
+  Future<Database> get database async {
+    if (_db != null) return _db!;
 
-//   Future<Cart> insert(Cart cart)async{
-//     print(cart.toMap());
-//     var dbClient = await db ;
-//     await dbClient!.insert('cart', cart.toMap());
-//     return cart ;
-//   }
+    _db = await initDB();
+    return _db!;
+  }
 
-//   Future<List<Cart>> getCartList()async{
-//     var dbClient = await db ;
-//     final List<Map<String , Object?>> queryResult =  await dbClient!.query('cart');
-//     return queryResult.map((e) => Cart.fromMap(e)).toList();
+  initDB() async {
+    String databasePath = await getDatabasesPath();
+    String path = join(databasePath, 'toten.db');
+    var isDBExists = await databaseExists(path);
+    if(kDebugMode){
+      print(isDBExists);
+      print(path);
+    }
 
-//   }
+    var db = await openDatabase(path, version: 1, onCreate: _onCreate);
 
-//   Future<int> delete(int id)async{
-//     var dbClient = await db ;
-//     return await dbClient!.delete(
-//       'cart',
-//       where: 'id = ?',
-//       whereArgs: [id]
-//     );
-//   }
+    return db;
+  }
 
-//   Future<int> updateQuantity(Cart cart)async{
-//     var dbClient = await db ;
-//     return await dbClient!.update(
-//         'cart',
-//         cart.toMap(),
-//         where: 'id = ?',
-//         whereArgs: [cart.id]
-//     );
-//   }
-// }
+  void _onCreate(Database db, int version) async {
+    debugPrint('Creating database');
+
+    await db.execute('''
+      CREATE TABLE $tbCart (
+        $cartId INTEGER PRIMARY KEY,
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE $tbCartItem (
+        $cartItemId INTEGER PRIMARY KEY,
+        $cartItemCartId INTEGER,
+        $cartItemProductId INTEGER,
+        FOREIGN KEY ($cartItemCartId) REFERENCES $tbCart($cartId),
+        FOREIGN KEY ($cartItemProductId) REFERENCES $tbProduct($productId)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE $tbProduct (
+        $productId INTEGER PRIMARY KEY,
+        $productName TEXT,
+        $productPrice REAL,
+        $productInicialPrice REAL,
+        $productCategory TEXT,
+        $productImage TEXT,
+        $productQuantity INTEGER
+      )
+    ''');
+  }
+
+  static Future<int> insert(String table, Map<String, Object?> data) async {
+    final db = await DBHelper.shared().database;
+    return db.insert(table, data);
+  }
+
+  static Future<List<Map<String, Object?>>> query(String table) async {
+    final db = await DBHelper.shared().database;
+    return db.query(table);
+  }
+
+  static Future dbClearAll() async {
+    if (_db == null) {
+      return;
+    }
+
+    await _db!.delete(tbCart);
+    await _db!.delete(tbCartItem);
+    await _db!.delete(tbProduct);
+  }
+
+  static Future dbClearTable(String table) async {
+    if (_db == null) {
+      return;
+    }
+
+    await _db!.delete(table);
+  }
+
+  Future close() async {
+    final db = await DBHelper.shared().database;
+    db.close();
+  }
+}
