@@ -28,7 +28,7 @@ class CartItem extends StatelessWidget {
                 color: Colors.redAccent,
               ),
               onPressed: () {
-                controller.removeFromCart(controller.cartItems.value[index]);
+                controller.removeFromCart(controller.cartItems[index]);
               },
             ),
             Container(
@@ -36,7 +36,7 @@ class CartItem extends StatelessWidget {
               width: 70,
               margin: const EdgeInsets.only(right: 15),
               child: Image.asset(
-                controller.cartItems.value[index].product.image,
+                controller.cartItems[index].product.image,
                 fit: BoxFit.contain,
               ),
             ),
@@ -46,14 +46,14 @@ class CartItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(controller.cartItems.value[index].product.name,
+                  Text(controller.cartItems[index].product.name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       )),
                   Text(
-                      "R\$ ${controller.cartItems.value[index].product.price.toStringAsFixed(2)}",
+                      "R\$ ${controller.cartItems[index].product.price.toStringAsFixed(2)}",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -75,13 +75,13 @@ class CartItem extends StatelessWidget {
                       color: Colors.blueAccent,
                     ),
                     onPressed: () {
-                      controller.decrement(controller.cartItems.value[index]);
+                      controller.decrement(controller.cartItems[index]);
                     },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: Obx(() => Text(
-                        controller.cartItems.value[index].quantity
+                        controller.cartItems[index].quantity
                             .toInt()
                             .toString(),
                         style: const TextStyle(
@@ -97,7 +97,7 @@ class CartItem extends StatelessWidget {
                       color: Colors.blueAccent,
                     ),
                     onPressed: () {
-                      controller.increment(controller.cartItems.value[index]);
+                      controller.increment(controller.cartItems[index]);
                     },
                   ),
                 ],

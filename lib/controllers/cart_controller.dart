@@ -3,28 +3,36 @@ import 'package:toten/models/product.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
-  Rx<List<CartItemModel>> cartItems = Rx<List<CartItemModel>>([]);
+  RxList<CartItemModel> cartItems = RxList<CartItemModel>([]);
   late CartItemModel cartItemModel;
   var itemCount = 0.obs;
+  RxBool isCartEmpty = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ever(cartItems, (_) {
+      updateTotalPrice();
+    });
+  }
 
   void addToCart(ProductModel product) {
-    var productIndex = cartItems.value.indexWhere((element) => element.product == product);
+    var productIndex = cartItems.indexWhere((element) => element.product == product);
     var productExists = productIndex != -1;
 
     if (productExists) {
-      cartItems.value[productIndex].increment();
+      cartItems[productIndex].increment();
+      updateTotalPrice();
     } else {
       cartItemModel = CartItemModel(product: product, quantity: 1.obs);
-      cartItems.value.add(cartItemModel);
-      itemCount.value = cartItems.value.length;
+      cartItems.add(cartItemModel);
+      itemCount.value = cartItems.length;
     } 
-    updateTotalPrice();
   }
 
   void removeFromCart(CartItemModel cartItem) {
-    cartItems.value.remove(cartItem);
-    itemCount.value = cartItems.value.length;
-    updateTotalPrice();
+    cartItems.remove(cartItem);
+    itemCount.value = cartItems.length;
   }
 
   void increment(CartItemModel cartItem){
@@ -42,12 +50,11 @@ class CartController extends GetxController {
   RxDouble totalPrice = RxDouble(0);
 
   void updateTotalPrice() {
-    totalPrice.value = cartItems.value.fold(0, (sum, item) => sum + item.product.price * item.quantity.value);
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    ever(cartItems, (_) => updateTotalPrice());
+    totalPrice.value = cartItems.fold(0, (sum, item) => sum + item.product.price * item.quantity.value);
+    if (totalPrice.value > 0) {
+      isCartEmpty.value = false;
+      return;
+    }
+    isCartEmpty.value = true;
   }
 }

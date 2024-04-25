@@ -44,7 +44,7 @@ class CartSummary extends StatelessWidget {
             ),
             SizedBox(
               width: 200,
-              child: ElevatedButton(
+              child: Obx(() => ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue,
                   foregroundColor: Colors.blue[900],
@@ -52,8 +52,10 @@ class CartSummary extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                onPressed: () {},
+                ), 
+                onPressed: controller.isCartEmpty.value ? null : () {
+                  // Code to handle button press
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +74,7 @@ class CartSummary extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+              )),
             ),
           ],
         ),
