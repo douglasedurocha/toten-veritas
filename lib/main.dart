@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toten/bindings/bindings.dart';
-import 'package:toten/views/ui/checkout.dart';
 import 'package:toten/views/ui/home.dart';
 
 void main() {
@@ -20,11 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/home',
-      routes: {
-        '/home': (_) => const HomePage(),
-        '/checkout': (_) => const CheckoutPage(),
-      },
+      home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

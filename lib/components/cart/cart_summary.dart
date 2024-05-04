@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toten/controllers/cart_controller.dart';
+import 'package:toten/views/ui/checkout.dart';
 
 class CartSummary extends StatefulWidget {
   const CartSummary({super.key, required this.controller});
@@ -12,10 +13,6 @@ class CartSummary extends StatefulWidget {
 }
 
 class _CartSummaryState extends State<CartSummary> {
-  void navigateToCheckout() {
-    Get.toNamed('/checkout');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -63,7 +60,15 @@ class _CartSummaryState extends State<CartSummary> {
                   ),
                 ), 
                 onPressed: widget.controller.isCartEmpty.value ? null : () {
-                  navigateToCheckout();
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => CheckoutPage(
+                        cartItems: widget.controller.cartItems,
+                        total: widget.controller.totalPrice.value
+                      )
+                    )
+                  );
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
