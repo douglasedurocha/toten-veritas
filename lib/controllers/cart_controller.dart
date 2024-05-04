@@ -6,7 +6,7 @@ class CartController extends GetxController {
   RxList<CartItemModel> cartItems = RxList<CartItemModel>([]);
   late CartItemModel cartItemModel;
   var itemCount = 0.obs;
-  RxBool isCartEmpty = false.obs;
+  RxBool isCartEmpty = true.obs;
 
   @override
   void onInit() {

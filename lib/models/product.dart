@@ -28,6 +28,12 @@ class ProductModel {
     };
   }
 
+  // static Future<List> getList() async {
+  //   var db = await DBHelper.shared().db;
+  //   var result = await db.query('tbProduct');
+  //   return result;
+  // }
+
   @override
   String toString() {
     return 'Product{id: $id, name: $name, price: $price, inicialPrice: $inicialPrice, image: $image, quantity: $quantity}';

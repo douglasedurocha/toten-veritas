@@ -2,10 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toten/controllers/cart_controller.dart';
 
-class CartSummary extends StatelessWidget {
+class CartSummary extends StatefulWidget {
   const CartSummary({super.key, required this.controller});
 
   final CartController controller;
+
+  @override
+  State<CartSummary> createState() => _CartSummaryState();
+}
+
+class _CartSummaryState extends State<CartSummary> {
+  void navigateToCheckout() {
+    Get.toNamed('/checkout');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +42,7 @@ class CartSummary extends StatelessWidget {
                   ),
                   const Spacer(),
                   Obx(() => Text(
-                        "R\$ ${controller.totalPrice.toStringAsFixed(2)}",
+                        "R\$ ${widget.controller.totalPrice.toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -53,8 +62,8 @@ class CartSummary extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ), 
-                onPressed: controller.isCartEmpty.value ? null : () {
-                  // Code to handle button press
+                onPressed: widget.controller.isCartEmpty.value ? null : () {
+                  navigateToCheckout();
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
