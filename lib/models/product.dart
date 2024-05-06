@@ -17,22 +17,17 @@ class ProductModel {
   final String image;
   final int quantity;
 
-  Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'price': price,
-      'inicialPrice': inicialPrice,
-      'image': image,
-      'quantity': quantity,
-    };
+  static ProductModel fromMap(Map<String, Object?> map) {
+    return ProductModel(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      price: map['price'] as double,
+      inicialPrice: map['inicialPrice'] as double,
+      category: map['category'] as String,
+      image: map['image'] as String,
+      quantity: map['quantity'] as int,
+    );
   }
-
-  // static Future<List> getList() async {
-  //   var db = await DBHelper.shared().db;
-  //   var result = await db.query('tbProduct');
-  //   return result;
-  // }
 
   @override
   String toString() {
