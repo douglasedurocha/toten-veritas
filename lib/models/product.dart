@@ -21,8 +21,8 @@ class ProductModel {
     return ProductModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      price: map['price'] as double,
-      inicialPrice: map['inicialPrice'] as double,
+      price: double.parse(map['price'] as String),
+      inicialPrice: double.parse(map['price'] as String),
       category: map['category'] as String,
       image: map['image'] as String,
       quantity: map['quantity'] as int,
