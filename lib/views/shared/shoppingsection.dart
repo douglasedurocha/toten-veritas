@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
 import 'package:toten/components/tab/content_view.dart';
 import 'package:toten/components/tab/custom_tab.dart';
 import 'package:toten/components/tab/custom_tab_bar.dart';
@@ -17,10 +18,11 @@ class _ShoppingSectionState extends State<ShoppingSection>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   late List<ContentView> contentViews;
+  late Future<bool> hasSaleProducts;
 
-  FutureBuilder<List<ProductModel>> getProductsByCategory(String category) {
+  FutureBuilder<List<ProductModel>> _buildFutureBuilder(String category) {
     return FutureBuilder<List<ProductModel>>(
-      future: DBHelper().getProductsByCategory(category),
+      future: category == 'sale' ? DBHelper().getProductsOnSale() : DBHelper().getProductsByCategory(category),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ProductList(products: snapshot.data!);
@@ -34,24 +36,28 @@ class _ShoppingSectionState extends State<ShoppingSection>
   }
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     contentViews = [
       ContentView(
+        tab: const CustomTab(title: 'Em Promoção', icon: Icons.local_offer),
+        content: _buildFutureBuilder('sale'), 
+      ),
+      ContentView(
         tab: const CustomTab(title: 'Bebidas', icon: Icons.local_drink),
-        content: getProductsByCategory('bebida'), 
+        content: _buildFutureBuilder('bebida'), 
       ),
       ContentView(
         tab: const CustomTab(title: 'Salgados', icon: Icons.fastfood),
-        content: getProductsByCategory('salgado'),
+        content: _buildFutureBuilder('salgado'),
       ),
       ContentView(
         tab: const CustomTab(title: 'Combos', icon: Icons.local_dining),
-        content: getProductsByCategory('combo'),
+        content: _buildFutureBuilder('combo'),
       ),
       ContentView(
         tab: const CustomTab(title: 'Quitandas', icon: Icons.cake),
-        content: getProductsByCategory('doce'),
+        content: _buildFutureBuilder('doce'),
       ),
     ];
     tabController = TabController(length: contentViews.length, vsync: this);

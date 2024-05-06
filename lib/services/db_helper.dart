@@ -23,6 +23,13 @@ class DBHelper {
     return products;
   }
 
+  Future<List<ProductModel>> getProductsOnSale() async {
+    final connection = await openConnection();
+    final result = await connection.execute('SELECT * FROM products WHERE price < initial_price');
+    final products = result.map((row) => ProductModel.fromMap(row.toColumnMap())).toList();
+    return products;
+  }
+
   // Future<List<UserModel>> getUsers() async {
   //   final connection = await openConnection();
   //   final result = await connection.execute('SELECT * FROM users');
