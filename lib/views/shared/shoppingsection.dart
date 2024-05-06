@@ -16,73 +16,44 @@ class ShoppingSection extends StatefulWidget {
 class _ShoppingSectionState extends State<ShoppingSection>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
+  late List<ContentView> contentViews;
 
-  List<ContentView> contentViews = [
-    ContentView(
-      tab: const CustomTab(title: 'Bebidas', icon: Icons.local_drink),
-      content: FutureBuilder<List<ProductModel>>(
-        future: DBHelper().getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ProductList(products: snapshot.data!);
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
-      ),
-    ),
-    ContentView(
-      tab: const CustomTab(title: 'Salgados', icon: Icons.fastfood),
-      content: FutureBuilder<List<ProductModel>>(
-        future: DBHelper().getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ProductList(products: snapshot.data!);
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
-      ),
-    ),
-    ContentView(
-      tab: const CustomTab(title: 'Combos', icon: Icons.local_dining),
-      content: FutureBuilder<List<ProductModel>>(
-        future: DBHelper().getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ProductList(products: snapshot.data!);
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
-      ),
-    ),
-    ContentView(
-      tab: const CustomTab(title: 'Quitandas', icon: Icons.cake),
-      content: FutureBuilder<List<ProductModel>>(
-        future: DBHelper().getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ProductList(products: snapshot.data!);
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
-      ),
-    ),
-  ];
+  FutureBuilder<List<ProductModel>> getProductsByCategory(String category) {
+    return FutureBuilder<List<ProductModel>>(
+      future: DBHelper().getProductsByCategory(category),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ProductList(products: snapshot.data!);
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+    contentViews = [
+      ContentView(
+        tab: const CustomTab(title: 'Bebidas', icon: Icons.local_drink),
+        content: getProductsByCategory('bebida'), 
+      ),
+      ContentView(
+        tab: const CustomTab(title: 'Salgados', icon: Icons.fastfood),
+        content: getProductsByCategory('salgado'),
+      ),
+      ContentView(
+        tab: const CustomTab(title: 'Combos', icon: Icons.local_dining),
+        content: getProductsByCategory('combo'),
+      ),
+      ContentView(
+        tab: const CustomTab(title: 'Quitandas', icon: Icons.cake),
+        content: getProductsByCategory('doce'),
+      ),
+    ];
     tabController = TabController(length: contentViews.length, vsync: this);
   }
 

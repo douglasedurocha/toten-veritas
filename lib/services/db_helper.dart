@@ -14,9 +14,11 @@ class DBHelper {
     return connection;
   }
 
-  Future<List<ProductModel>> getProducts() async {
+  Future<List<ProductModel>> getProductsByCategory(String category) async {
     final connection = await openConnection();
-    final result = await connection.execute('SELECT * FROM products');
+    final result = await connection.execute(Sql.named('SELECT * FROM products WHERE category=@category'), parameters: {
+      'category': category,
+    });
     final products = result.map((row) => ProductModel.fromMap(row.toColumnMap())).toList();
     return products;
   }
@@ -58,9 +60,9 @@ class DBHelper {
     await Future.wait(orderItems);
   }
 
-  Future<List<Object>> fetchData() async {
-    final products = await getProducts();
-    // final users = await getUsers();
-    return products;
-  }
+  // Future<List<Object>> fetchData() async {
+  //   final products = await getProducts();
+  //   // final users = await getUsers();
+  //   return products;
+  // }
 }
