@@ -13,7 +13,6 @@ class CartSummaryList extends StatelessWidget {
         child: DataTable(
           dataRowMinHeight: 30,
           dataRowMaxHeight: 70,
-          columnSpacing: 260,
           headingTextStyle: const TextStyle(
             color: Colors.black87,
             fontSize: 15,
@@ -26,24 +25,33 @@ class CartSummaryList extends StatelessWidget {
           ],
           rows: cartItems.map((item) {
             return DataRow(cells: [
-              DataCell(Row(
-                children: [
-                  Image(
-                    image: AssetImage(item.product.image),
-                    width: 50,
-                    height: 50,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(item.product.name),
-                ],
+              DataCell(SizedBox(
+                width: 550,
+                child: Row(
+                  children: [
+                    Image(
+                      image: AssetImage(item.product.image),
+                      width: 50,
+                      height: 50,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(item.product.name),
+                  ],
+                ),
               )),
-              DataCell(Text(
-                item.quantity.toString(),
-                textAlign: TextAlign.center,
+              DataCell(SizedBox(
+                width: 50,
+                child: Text(
+                  item.quantity.toString(),
+                  textAlign: TextAlign.center,
+                ),
               )),
-              DataCell(Text('R\$ ${(item.product.price * item.quantity.value).toStringAsFixed(2)}')),
+              DataCell(SizedBox(
+                width: 100,
+                child: Text('R\$ ${(item.product.price * item.quantity.value).toStringAsFixed(2)}')
+                )),
             ]);
           }).toList()
         ),
