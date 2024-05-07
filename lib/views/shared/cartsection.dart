@@ -31,7 +31,6 @@ class CartSection extends GetView<CartController> {
             ],
           ),
         ),
-        // CartItemsList(controller: controller),
         SizedBox(
           height: 500,
           child: CartItemList(controller: controller),
