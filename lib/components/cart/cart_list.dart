@@ -48,12 +48,16 @@ class CartItemList extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(controller.cartItems[index].product.name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              )),
+                          SizedBox(
+                            width: 200,
+                            child: Text(controller.cartItems[index].product.name,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                  overflow: TextOverflow.ellipsis
+                                )),
+                          ),
                           Text(
                               "R\$ ${controller.cartItems[index].product.price.toStringAsFixed(2)}",
                               style: const TextStyle(

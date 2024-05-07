@@ -37,7 +37,13 @@ class CartSummaryList extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    Text(item.product.name),
+                    SizedBox(
+                      width: 400,
+                      child: Text(
+                        item.product.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               )),
