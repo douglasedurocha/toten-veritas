@@ -9,6 +9,15 @@ class ProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (products.isEmpty) {
+      return const Center(
+        child: Text(
+          'Não há produtos nessa categoria',
+          style: TextStyle(fontSize: 20),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
@@ -21,7 +30,7 @@ class ProductList extends StatelessWidget {
         ),
         itemCount: products.length,
         itemBuilder: (context, int i) {
-          final product = products[i]; // Remove the name of the function expression
+          final product = products[i];
           return Product(product: product);
         },
       ),
