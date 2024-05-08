@@ -1,7 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:toten/models/user.dart';
+import 'package:toten/services/db_helper.dart';
 
-class PaymentInfoSection extends StatelessWidget {
-  const PaymentInfoSection({super.key});
+class PaymentInfoSection extends StatefulWidget {
+  const PaymentInfoSection({super.key, required this.total});
+  
+  final double total;
+
+  @override
+  State<PaymentInfoSection> createState() => _PaymentInfoSectionState();
+}
+
+class _PaymentInfoSectionState extends State<PaymentInfoSection> {
+  String userName = '';
+  double userBalance = 0.0;
+
+  Future<void> loadUserInfo(int userId) async {
+    UserModel userData = await DBHelper().getUser(userId);
+
+    setState(() {
+      userName = userData.name;
+      userBalance = userData.balance;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +133,9 @@ class PaymentInfoSection extends StatelessWidget {
                           hintText: 'Número da carteirinha',
                           border: OutlineInputBorder(),
                         ),
+                        onFieldSubmitted: (value) => {
+                          loadUserInfo(int.parse(value)),
+                        },
                       ),
                       Divider(
                         color: Colors.grey[400],
@@ -134,9 +158,9 @@ class PaymentInfoSection extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 3),
-                              const Text(
-                                'João da Silva',
-                                style: TextStyle(
+                              Text(
+                                (userName.isNotEmpty) ? userName : 'Não informado',
+                                style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
@@ -156,12 +180,27 @@ class PaymentInfoSection extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 3),
-                              const Text(
-                                'R\$ 40',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500),
+                              Row(
+                                children: [
+                                  Text(
+                                    'R\$ ${userBalance.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(width: 5,),
+                                  (userBalance < widget.total)
+                                      ? const Text(
+                                          '! Saldo insuficiente',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                ],
                               ),
                             ],
                           ),

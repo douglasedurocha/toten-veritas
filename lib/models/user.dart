@@ -3,20 +3,20 @@ class UserModel{
     required this.id,
     required this.name,
     required this.email,
-    required this.password
+    required this.balance,
   });
 
   final int id;
   final String name;
   final String email;
-  final String password;
+  final double balance;
 
   static UserModel fromMap(Map<String, Object?> map) {
     return UserModel(
       id: map['id'] as int,
-      name: map['name'] as String,
+      name: map['username'] as String,
       email: map['email'] as String,
-      password: map['password'] as String
+      balance: double.parse(map['balance'] as String),
     );
   }
 

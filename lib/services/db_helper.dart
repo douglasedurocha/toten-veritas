@@ -30,16 +30,9 @@ class DBHelper {
     return products;
   }
 
-  // Future<List<UserModel>> getUsers() async {
-  //   final connection = await openConnection();
-  //   final result = await connection.execute('SELECT * FROM users');
-  //   final users = result.map((row) => UserModel.fromMap(row.toColumnMap())).toList();
-  //   return users;
-  // }
-
   Future<UserModel> getUser(int id) async {
     final connection = await openConnection();
-    final result = await connection.execute('SELECT * FROM users WHERE id = @id', parameters: {
+    final result = await connection.execute(Sql.named('SELECT * FROM users WHERE id = @id'), parameters: {
       'id': id,
     });
     final user = UserModel.fromMap(result.first.toColumnMap());

@@ -18,7 +18,7 @@ class CheckoutPage extends StatelessWidget {
           children: [
             CartSummarySection(cartItems: cartItems, total: total,),
             const SizedBox(width: 50),
-            const PaymentInfoSection(),
+            PaymentInfoSection(total: total),
           ],
         ),
       )
