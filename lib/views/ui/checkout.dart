@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:toten/models/cart_item.dart';
 import 'package:toten/views/shared/cartsummarysection.dart';
 import 'package:toten/views/shared/paymentinfosection.dart';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key, required this.cartItems, required this.total});
 
-  final List cartItems;
+  final List<CartItemModel> cartItems;
   final double total;
 
   @override
@@ -18,7 +19,7 @@ class CheckoutPage extends StatelessWidget {
           children: [
             CartSummarySection(cartItems: cartItems, total: total,),
             const SizedBox(width: 50),
-            PaymentInfoSection(total: total),
+            PaymentInfoSection(cartItems: cartItems, total: total),
           ],
         ),
       )

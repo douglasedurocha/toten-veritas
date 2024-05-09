@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:toten/components/checkout/cartsummary_list.dart';
+import 'package:toten/models/cart_item.dart';
 
 class CartSummarySection extends StatelessWidget {
   const CartSummarySection({super.key, required this.cartItems, required this.total});
 
-  final List cartItems;
+  final List<CartItemModel> cartItems;
   final double total;
 
   @override

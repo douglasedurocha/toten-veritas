@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:toten/models/cart_item.dart';
 import 'package:toten/models/user.dart';
 import 'package:toten/services/db_helper.dart';
 
 class PaymentInfoSection extends StatefulWidget {
-  const PaymentInfoSection({super.key, required this.total});
+  const PaymentInfoSection({super.key, required this.cartItems, required this.total});
   
+  final List<CartItemModel> cartItems;
   final double total;
 
   @override
@@ -12,15 +14,13 @@ class PaymentInfoSection extends StatefulWidget {
 }
 
 class _PaymentInfoSectionState extends State<PaymentInfoSection> {
-  String userName = '';
-  double userBalance = 0.0;
+  UserModel user = const UserModel(id: 0, name: '', balance: 0.0, email: '');
 
   Future<void> loadUserInfo(int userId) async {
     UserModel userData = await DBHelper().getUser(userId);
 
     setState(() {
-      userName = userData.name;
-      userBalance = userData.balance;
+      user = userData;
     });
   }
 
@@ -159,7 +159,7 @@ class _PaymentInfoSectionState extends State<PaymentInfoSection> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                (userName.isNotEmpty) ? userName : 'Não informado',
+                                (user.name.isNotEmpty) ? user.name : 'Não informado',
                                 style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.black,
@@ -183,14 +183,14 @@ class _PaymentInfoSectionState extends State<PaymentInfoSection> {
                               Row(
                                 children: [
                                   Text(
-                                    'R\$ ${userBalance.toStringAsFixed(2)}',
+                                    'R\$ ${user.balance.toStringAsFixed(2)}',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         color: Colors.black,
                                         fontWeight: FontWeight.w500),
                                   ),
                                   const SizedBox(width: 5,),
-                                  (userBalance < widget.total)
+                                  (user.balance < widget.total)
                                       ? const Text(
                                           '! Saldo insuficiente',
                                           style: TextStyle(
@@ -209,9 +209,9 @@ class _PaymentInfoSectionState extends State<PaymentInfoSection> {
                       const Spacer(),
                       Center(
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Realizar pagamento
-                          },
+                          onPressed: (user.balance > widget.total) ? () {
+                            DBHelper().insertOrder(widget.cartItems, user);
+                          } : null,
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(450, 50),
                             backgroundColor: Colors.blue,

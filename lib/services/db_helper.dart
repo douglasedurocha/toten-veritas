@@ -41,22 +41,36 @@ class DBHelper {
 
   Future<void> updateUserBalance(UserModel user, double newBalance) async {
     final connection = await openConnection();
-    await connection.execute('UPDATE users SET balance = @balance WHERE id = @id', parameters: {
+    await connection.execute(Sql.named('UPDATE users SET balance = @balance WHERE id = @id'), parameters: {
       'balance': newBalance,
       'id': user.id,
     });
   }
 
+  Future<void> updateProductsQuantity(List<CartItemModel> cartItems) async {
+    final connection = await openConnection();
+    final updateProducts = cartItems.map((item) => connection.execute(Sql.named('UPDATE products SET quantity = @quantity WHERE id = @id'), parameters: {
+      'quantity': item.product.quantity - item.quantity.value,
+      'id': item.product.id,
+    }));
+    await Future.wait(updateProducts);
+  }
+
+
   Future<void> insertOrder(List<CartItemModel> cartItems, UserModel user) async {
     final connection = await openConnection();
-    final orderId = await connection.execute('INSERT INTO orders (user_id) VALUES (@userId) RETURNING id', parameters:{
+    final resultId = await connection.execute(Sql.named('INSERT INTO orders (user_id) VALUES (@userId) RETURNING id'), parameters:{
       'userId': user.id,
     });
-    final orderItems = cartItems.map((item) => connection.execute('INSERT INTO cart_items (order_id, product_id, quantity) VALUES (@orderId, @productId, @quantity)', parameters: {
+    int orderId = resultId[0][0] as int;
+    final orderItems = cartItems.map((item) => connection.execute(Sql.named('INSERT INTO cart_items (order_id, product_id, quantity) VALUES (@orderId, @productId, @quantity)'), parameters: {
       'orderId': orderId,
       'productId': item.product.id,
-      'quantity': item.quantity,
+      'quantity': item.quantity.value,
     }));
+    double total = cartItems.fold(0, (total, item) => total + item.product.price * item.quantity.value);
+    await updateUserBalance(user, user.balance - total);
+    await updateProductsQuantity(cartItems);
     await Future.wait(orderItems);
   }
 

@@ -27,5 +27,5 @@ CREATE TABLE cart_items (
     order_id INTEGER NOT NULL,
     quantity INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (order_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
