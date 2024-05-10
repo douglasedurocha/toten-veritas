@@ -56,7 +56,6 @@ class DBHelper {
     await Future.wait(updateProducts);
   }
 
-
   Future<void> insertOrder(List<CartItemModel> cartItems, UserModel user) async {
     final connection = await openConnection();
     final resultId = await connection.execute(Sql.named('INSERT INTO orders (user_id) VALUES (@userId) RETURNING id'), parameters:{

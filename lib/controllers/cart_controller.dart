@@ -1,3 +1,5 @@
+import 'package:fl_toast/fl_toast.dart';
+import 'package:flutter/material.dart';
 import 'package:toten/models/cart_item.dart';
 import 'package:toten/models/product.dart';
 import 'package:get/get.dart';
@@ -21,8 +23,7 @@ class CartController extends GetxController {
     var productExists = productIndex != -1;
 
     if (productExists) {
-      cartItems[productIndex].increment();
-      updateTotalPrice();
+      increment(cartItems[productIndex]);
     } else {
       cartItemModel = CartItemModel(product: product, quantity: 1.obs);
       cartItems.add(cartItemModel);
@@ -36,14 +37,27 @@ class CartController extends GetxController {
   }
 
   void increment(CartItemModel cartItem){
-    cartItem.increment();
-    updateTotalPrice();
+    if (cartItem.product.quantity > cartItem.quantity.value){
+      cartItem.increment();
+      updateTotalPrice();
+      updateStock(cartItem.product);
+    }else{
+      showStyledToast(
+        child: const Text(
+          'Quantidade indisponível no estoque',
+          style: TextStyle(fontSize: 16),
+        ),
+        context: ToastProvider.context,
+        duration: const Duration(seconds: 3),
+      );
+    }
   }
 
   void decrement(CartItemModel cartItem){
     if (cartItem.quantity.value > 0){
       cartItem.decrement();
       updateTotalPrice();
+      updateStock(cartItem.product);
     }
   }
 
@@ -56,5 +70,12 @@ class CartController extends GetxController {
       return;
     }
     isCartEmpty.value = true;
+  }
+
+  void updateStock(ProductModel product) {
+    var productIndex = cartItems.indexWhere((element) => element.product == product);
+    if (productIndex != -1) {
+      cartItems[productIndex].isInStock.value = product.quantity > cartItems[productIndex].quantity.value;
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toten/bindings/bindings.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const ToastProvider(child: HomePage()),
       debugShowCheckedModeBanner: false,
     );
   }
