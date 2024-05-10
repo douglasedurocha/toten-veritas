@@ -16,7 +16,7 @@ class DBHelper {
 
   Future<List<ProductModel>> getProductsByCategory(String category) async {
     final connection = await openConnection();
-    final result = await connection.execute(Sql.named('SELECT * FROM products WHERE category=@category ORDER BY (initial_price - price) DESC'), parameters: {
+    final result = await connection.execute(Sql.named('SELECT * FROM products WHERE category=@category AND quantity > 0 ORDER BY (initial_price - price) DESC'), parameters: {
       'category': category,
     });
     final products = result.map((row) => ProductModel.fromMap(row.toColumnMap())).toList();
@@ -25,7 +25,7 @@ class DBHelper {
 
   Future<List<ProductModel>> getProductsOnSale() async {
     final connection = await openConnection();
-    final result = await connection.execute('SELECT * FROM products WHERE price < initial_price ORDER BY (initial_price - price) DESC');
+    final result = await connection.execute('SELECT * FROM products WHERE price < initial_price AND quantity > 0 ORDER BY (initial_price - price) DESC');
     final products = result.map((row) => ProductModel.fromMap(row.toColumnMap())).toList();
     return products;
   }
