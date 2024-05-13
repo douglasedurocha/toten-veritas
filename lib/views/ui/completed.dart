@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:toten/models/cart_item.dart';
+import 'package:toten/models/user.dart';
+import 'package:toten/services/db_helper.dart';
+import 'package:toten/views/ui/home.dart';
+
+class CompletedPage extends StatefulWidget {
+  const CompletedPage({super.key, required this.cartItems, required this.user});
+
+  final List<CartItemModel> cartItems;
+  final UserModel user;
+
+  @override
+  State<CompletedPage> createState() => _CompletedPageState();
+}
+
+class _CompletedPageState extends State<CompletedPage> {
+  @override
+  void initState() {
+    super.initState();
+    
+    Future.delayed(const Duration(seconds: 4), () {
+      Navigator.push(
+        context, 
+        MaterialPageRoute(
+          builder: (context) => const HomePage()
+        )
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      body: FutureBuilder(
+        future: DBHelper().insertOrder(widget.cartItems, widget.user),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 400, width: 400, child: Lottie.asset('assets/error.json', repeat: false)),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Erro ao realizar pedido!',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ), 
+                  ),
+                ],
+              ));
+          } else {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 400, width: 400, child: Lottie.asset('assets/success.json', repeat: false)),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Pedido realizado com sucesso!',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ), 
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toten/models/cart_item.dart';
 import 'package:toten/models/user.dart';
 import 'package:toten/services/db_helper.dart';
+import 'package:toten/views/ui/completed.dart';
 
 class PaymentInfoSection extends StatefulWidget {
   const PaymentInfoSection({super.key, required this.cartItems, required this.total});
@@ -210,7 +211,15 @@ class _PaymentInfoSectionState extends State<PaymentInfoSection> {
                       Center(
                         child: ElevatedButton(
                           onPressed: (user.balance > widget.total) ? () {
-                            DBHelper().insertOrder(widget.cartItems, user);
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                                builder: (context) => CompletedPage(
+                                  cartItems: widget.cartItems,
+                                  user: user,
+                                )
+                              )
+                            );
                           } : null,
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(450, 50),
