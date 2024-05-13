@@ -64,6 +64,7 @@ class _CartSummaryState extends State<CartSummary> {
                     context, 
                     MaterialPageRoute(
                       builder: (context) => CheckoutPage(
+                        controller: widget.controller,
                         cartItems: widget.controller.cartItems,
                         total: widget.controller.totalPrice.value
                       )

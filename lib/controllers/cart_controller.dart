@@ -78,4 +78,9 @@ class CartController extends GetxController {
       cartItems[productIndex].isInStock.value = product.quantity > cartItems[productIndex].quantity.value;
     }
   }
+
+  void clearCart() {
+    cartItems.clear();
+    itemCount.value = 0;
+  }
 }

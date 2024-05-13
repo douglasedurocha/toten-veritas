@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:toten/controllers/cart_controller.dart';
 import 'package:toten/models/cart_item.dart';
 import 'package:toten/models/user.dart';
 import 'package:toten/services/db_helper.dart';
 import 'package:toten/views/ui/home.dart';
 
 class CompletedPage extends StatefulWidget {
-  const CompletedPage({super.key, required this.cartItems, required this.user});
+  const CompletedPage({super.key, required this.controller, required this.cartItems, required this.user});
 
+  final CartController controller;
   final List<CartItemModel> cartItems;
   final UserModel user;
 
@@ -21,6 +23,7 @@ class _CompletedPageState extends State<CompletedPage> {
     super.initState();
     
     Future.delayed(const Duration(seconds: 4), () {
+      widget.controller.clearCart();
       Navigator.push(
         context, 
         MaterialPageRoute(

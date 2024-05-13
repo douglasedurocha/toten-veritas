@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:toten/controllers/cart_controller.dart';
 import 'package:toten/models/cart_item.dart';
 import 'package:toten/models/user.dart';
 import 'package:toten/services/db_helper.dart';
 import 'package:toten/views/ui/completed.dart';
 
 class PaymentInfoSection extends StatefulWidget {
-  const PaymentInfoSection({super.key, required this.cartItems, required this.total});
+  const PaymentInfoSection({super.key, required this.controller, required this.cartItems, required this.total});
   
+  final CartController controller;
   final List<CartItemModel> cartItems;
   final double total;
 
@@ -215,6 +217,7 @@ class _PaymentInfoSectionState extends State<PaymentInfoSection> {
                               context, 
                               MaterialPageRoute(
                                 builder: (context) => CompletedPage(
+                                  controller: widget.controller,
                                   cartItems: widget.cartItems,
                                   user: user,
                                 )
