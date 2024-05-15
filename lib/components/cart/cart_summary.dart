@@ -49,7 +49,7 @@ class _CartSummaryState extends State<CartSummary> {
               ),
             ),
             SizedBox(
-              width: 200,
+              width: 250,
               child: Obx(() => ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue,
