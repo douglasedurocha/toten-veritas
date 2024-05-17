@@ -3,10 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toten/bindings/bindings.dart';
 import 'package:toten/views/ui/home.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
   GlobalBindings().dependencies();
-  // DBHelper.shared().db;
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1024, 768),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(const MyApp());
 }
 
