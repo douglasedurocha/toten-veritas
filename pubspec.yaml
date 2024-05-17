@@ -42,7 +42,6 @@ dependencies:
   fl_toast: ^3.2.0
   lottie: ^3.0.0
   http: ^0.13.6
-  flutterpi_tool: ^0.3.0
   window_manager: ^0.3.8
 
 dev_dependencies:
