@@ -10,7 +10,9 @@ class DBHelper {
       database: 'toten',
       username: 'douglas',
       password: 'batata',
-    ));
+    ),
+        settings: ConnectionSettings(sslMode: SslMode.disable),
+    );
     return connection;
   }
 
