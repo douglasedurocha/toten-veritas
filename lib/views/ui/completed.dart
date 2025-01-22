@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shell/shell.dart';
 import 'package:toten/controllers/cart_controller.dart';
 import 'package:toten/models/cart_item.dart';
 import 'package:toten/models/user.dart';
@@ -18,6 +19,18 @@ class CompletedPage extends StatefulWidget {
 }
 
 class _CompletedPageState extends State<CompletedPage> {
+  Future<void> _processOrder() async {
+    final dbHelper = DBHelper();
+    final orderId = await dbHelper.insertOrder(widget.cartItems, widget.user);
+    
+    try {
+      final shell = Shell();
+      await shell.run('finalizacaovenda.sh', arguments: [orderId.toString()]);
+    } catch (e) {
+      debugPrint('Error executing finalizacaovenda.sh: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +51,7 @@ class _CompletedPageState extends State<CompletedPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: FutureBuilder(
-        future: DBHelper().insertOrder(widget.cartItems, widget.user),
+        future: _processOrder(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -59,7 +72,8 @@ class _CompletedPageState extends State<CompletedPage> {
                     ), 
                   ),
                 ],
-              ));
+              )
+            );
           } else {
             return Center(
               child: Column(

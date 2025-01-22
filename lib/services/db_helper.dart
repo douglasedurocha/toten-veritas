@@ -56,12 +56,13 @@ class DBHelper {
     await Future.wait(updateProducts);
   }
 
-  Future<void> insertOrder(List<CartItemModel> cartItems, UserModel user) async {
+  Future<int> insertOrder(List<CartItemModel> cartItems, UserModel user) async {
     final connection = await openConnection();
     final resultId = await connection.execute(Sql.named('INSERT INTO orders (user_id) VALUES (@userId) RETURNING id'), parameters:{
       'userId': user.id,
     });
     int orderId = resultId[0][0] as int;
+    
     final orderItems = cartItems.map((item) => connection.execute(Sql.named('INSERT INTO cart_items (order_id, product_id, quantity) VALUES (@orderId, @productId, @quantity)'), parameters: {
       'orderId': orderId,
       'productId': item.product.id,
@@ -71,6 +72,8 @@ class DBHelper {
     await updateUserBalance(user, user.balance - total);
     await updateProductsQuantity(cartItems);
     await Future.wait(orderItems);
+
+    return orderId;
   }
 
   // Future<List<Object>> fetchData() async {
