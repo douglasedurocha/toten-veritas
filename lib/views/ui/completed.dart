@@ -25,7 +25,7 @@ class _CompletedPageState extends State<CompletedPage> {
     
     try {
       final shell = Shell();
-      await shell.run('finalizacaovenda.sh', arguments: [orderId.toString()]);
+      await shell.start('./finalizacaovenda.sh', arguments: [orderId.toString()]);
     } catch (e) {
       debugPrint('Error executing finalizacaovenda.sh: $e');
     }
