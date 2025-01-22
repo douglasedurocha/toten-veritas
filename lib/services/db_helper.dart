@@ -32,9 +32,9 @@ class DBHelper {
     return products;
   }
 
-  Future<UserModel> getUser(int id) async {
+  Future<UserModel> getUser(String id) async {
     final connection = await openConnection();
-    final result = await connection.execute(Sql.named('SELECT * FROM users WHERE id = @id'), parameters: {
+    final result = await connection.execute(Sql.named('SELECT * FROM users WHERE username = @id'), parameters: {
       'id': id,
     });
     final user = UserModel.fromMap(result.first.toColumnMap());

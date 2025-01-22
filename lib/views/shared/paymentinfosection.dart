@@ -19,7 +19,7 @@ class PaymentInfoSection extends StatefulWidget {
 class _PaymentInfoSectionState extends State<PaymentInfoSection> {
   UserModel user = const UserModel(id: 0, name: '', balance: 0.0, email: '');
 
-  Future<void> loadUserInfo(int userId) async {
+  Future<void> loadUserInfo(String userId) async {
     UserModel userData = await DBHelper().getUser(userId);
 
     setState(() {
@@ -137,7 +137,7 @@ class _PaymentInfoSectionState extends State<PaymentInfoSection> {
                           border: OutlineInputBorder(),
                         ),
                         onFieldSubmitted: (value) => {
-                          loadUserInfo(int.parse(value)),
+                          loadUserInfo(value),
                         },
                       ),
                       Divider(
