@@ -25,34 +25,39 @@ class Product extends GetView<CartController> {
           ]),
       child: Column(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              children: [
-                Image.asset(
-                  product.image,
-                  fit: BoxFit.contain,
-                ),
-                (product.price < product.initialPrice) ?
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      'PROMOÇÃO',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+          GestureDetector(
+            onTap: () {
+              controller.addToCart(product);
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Stack(
+                children: [
+                  Image.asset(
+                    product.image,
+                    fit: BoxFit.contain,
+                  ),
+                  (product.price < product.initialPrice) ?
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'PROMOÇÃO',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ): const SizedBox(),
-              ],
+                  ): const SizedBox(),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -63,18 +68,17 @@ class Product extends GetView<CartController> {
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: 280,
+                      Expanded(
                         child: Text(
                           product.name,
                           textAlign: TextAlign.left,
                           style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                           ),
+                          overflow: TextOverflow.visible,
                         ),
-                      ),
+                        ),
                     ],
                   )),
             ),

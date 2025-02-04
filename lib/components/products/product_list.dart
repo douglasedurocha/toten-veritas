@@ -21,7 +21,7 @@ class ProductList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
+        padding: const EdgeInsets.only(right: 5, left: 5, bottom: 120),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 10,

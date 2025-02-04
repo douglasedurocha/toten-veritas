@@ -48,15 +48,29 @@ class CartItemList extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 200,
-                            child: Text(controller.cartItems[index].product.name,
+                          Row(
+                            children: [
+                              Obx(() => Text(
+                                "${controller.cartItems[index].quantity}x ",
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
-                                  overflow: TextOverflow.ellipsis
-                                )),
+                                ),
+                              )),
+                              SizedBox(
+                              width: 180,
+                              child: Text(
+                                controller.cartItems[index].product.name,
+                                style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                                overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              ),
+                            ],
                           ),
                           Text(
                               "R\$ ${controller.cartItems[index].product.price.toStringAsFixed(2)}",
@@ -68,48 +82,48 @@ class CartItemList extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 0),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            iconSize: 0.5,
-                            icon: const Icon(
-                              Icons.remove_circle_outline,
-                              size: 30,
-                              color: Colors.blueAccent,
-                            ),
-                            onPressed: () {
-                              controller.decrement(controller.cartItems[index]);
-                            },
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: Obx(() => Text(
-                                controller.cartItems[index].quantity
-                                    .toInt()
-                                    .toString(),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ))),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.add_circle,
-                              size: 30,
-                              color: Colors.blueAccent,
-                            ),
-                            onPressed: () {
-                              controller.increment(controller.cartItems[index]);
-                            },
-                          ),
-                        ],
-                      ),
-                    )
+                    // const Spacer(),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(vertical: 0),
+                    //   child: Row(
+                    //     children: [
+                    //       IconButton(
+                    //         iconSize: 0.5,
+                    //         icon: const Icon(
+                    //           Icons.remove_circle_outline,
+                    //           size: 30,
+                    //           color: Colors.blueAccent,
+                    //         ),
+                    //         onPressed: () {
+                    //           controller.decrement(controller.cartItems[index]);
+                    //         },
+                    //       ),
+                    //       Padding(
+                    //         padding:
+                    //             const EdgeInsets.symmetric(horizontal: 2.0),
+                    //         child: Obx(() => Text(
+                    //             controller.cartItems[index].quantity
+                    //                 .toInt()
+                    //                 .toString(),
+                    //             style: const TextStyle(
+                    //               fontSize: 20,
+                    //               fontWeight: FontWeight.bold,
+                    //               color: Colors.black54,
+                    //             ))),
+                    //       ),
+                    //       IconButton(
+                    //         icon: const Icon(
+                    //           Icons.add_circle,
+                    //           size: 30,
+                    //           color: Colors.blueAccent,
+                    //         ),
+                    //         onPressed: () {
+                    //           controller.increment(controller.cartItems[index]);
+                    //         },
+                    //       ),
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ));
           },
