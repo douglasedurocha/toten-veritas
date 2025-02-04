@@ -3,11 +3,19 @@ import configparser
 import os
 import json
 import requests
+from os.path import abspath
+import sys
 
 # Conectar no banco local em postgres
 
 
 class Sincronizador:
+
+
+    importar_fotos = False
+    importar_usuarios = False
+    importar_produtos = False
+    exportar_vendas = False
 
     def load_configuracao(self):
         configura = configparser.ConfigParser()
@@ -55,14 +63,43 @@ class Sincronizador:
         cur.close()
         conn.close()
         return
+    
+    def atualizar_todas_fotos(self):
+        cur = self.conexao.cursor()
+        cur.execute("SELECT id, image FROM products ")
+        prods = cur.fetchall()
+        for prod in prods:
+            try:
+                local = self.download_foto_produto(prod[0], f'{self.prefixo_dir_imagens}')
+                if local:
+                    cur.execute(f"UPDATE products SET image = '{local}' WHERE id = {prod[0]}")
+            except Exception as e:
+                print(f'Erro ao baixar a imagem do produto {prod[0]}: {e}')
+        cur.close()
+        self.conexao.commit()
 
     def download_foto_produto(self, id, caminho):
         print(f'Download da foto do produto: {id}')
         response = requests.get(
             f'{self.endpoint}/imagem_publica_produto/v1/{id}/')
+        filename = response.headers.get('Content-Disposition')
+        if filename:
+            caminho = f'{caminho}/{filename}'
+        else:
+            caminho = f'{caminho}/{id}.jpg'
         if response.status_code == 200:
+            print(f'salvando imagem do produto {id} em {caminho}')
             with open(caminho, 'wb') as f:
-                f.write(response.content)
+                f.write(response.content)            
+            print(f'salvo com sucesso')
+            print(f'response: {response}')
+            return abspath(caminho)
+            # return caminho
+        else:
+            print(f'Erro ao baixar a imagem do produto {id}')
+            print(f'response: {response}')
+            return None
+        
 
     def importar_produtos(self, produtos_json):
         print('Importando produtos')
@@ -107,7 +144,7 @@ class Sincronizador:
         cur.close()
         return
 
-    def importar_dados_usuarios_via_api(self):
+    def importar_dados_usuarios(self):
         print('Importando dados via API')
         url = f'{self.endpoint}/importar_dados_totem/v1/'
         print(f'url: {url}')
@@ -119,9 +156,12 @@ class Sincronizador:
             cur.execute(
                 "SELECT data_atualizacao, ultima_entrada, ultima_saida FROM sincronizacao WHERE id = 1")
             configuracao = cur.fetchone()
-            data_atualizacao = configuracao[0]
-            ultima_entrada = configuracao[1]
-            ultima_saida = configuracao[2]
+            # data_atualizacao = configuracao[0]
+            # ultima_entrada = configuracao[1]
+            # ultima_saida = configuracao[2]
+            data_atualizacao = 0
+            ultima_entrada = 0
+            ultima_saida = 0
         except Exception as e:
             print(f'Erro ao buscar configuração: {e}')
 
@@ -141,14 +181,17 @@ class Sincronizador:
             print('Sucesso')
             result_json = result.json()
             # print(result_json)
-            produtos_atualizados = result_json.get('produtos_atualizados')
-            self.importar_produtos(produtos_atualizados)
-            usuarios_atualizados = result_json.get('usuarios_atualizados')
-            self.importar_usuarios(usuarios_atualizados)
+            produtos_atualizados = result_json.get('produtos_atualizados', None)
+            if produtos_atualizados:
+                self.importar_produtos(produtos_atualizados)
+            usuarios_atualizados = result_json.get('usuarios_atualizados', None)
+            if usuarios_atualizados:
+                self.importar_usuarios(usuarios_atualizados)
             # tabela_precos_totem = result_json.get('tabela_precos_totem')
-            ultima_sincronizacao = result_json.get('ultima_sincronizacao')
-            ultima_entrada = result_json.get('ultima_entrada')
-            ultima_saida = result_json.get('ultima_saida')
+            # Salvar dados de sincronização
+            ultima_sincronizacao = result_json.get('ultima_sincronizacao', data_atualizacao)
+            ultima_entrada = result_json.get('ultima_entrada', ultima_entrada)
+            ultima_saida = result_json.get('ultima_saida', ultima_saida)
             self.atualizar_dados_sincronizacao(
                 ultima_sincronizacao, ultima_entrada, ultima_saida)
 
@@ -160,7 +203,7 @@ class Sincronizador:
         # cur.execute(
         #     "SELECT id, user_id, exportado, data_criacao FROM orders WHERE exportado = false")
         cur.execute(
-            "SELECT id, user_id, exportado, data_criacao FROM orders ")
+            "SELECT id, user_id, exportado, data_criacao FROM orders WHERE exportado = false AND contador_impressao > 0")
         orders = cur.fetchall()
         produto_json = [
 
@@ -241,16 +284,53 @@ class Sincronizador:
         return result
     # def sincronizar():
 
+    def importar_dados_produto(self):
+        print('Importando dados de produtos')
+        # print(f'id: {self.identificador}')
+        # print(f'chave: {self.chave}')
+        result = requests.post(
+            url=f'{self.endpoint}/importar_dados_produto/v1/',
+            data={
+                'identificador': self.identificador,
+                'chave': self.chave,
+            }
+        )
+        print(f'result: {result}')
+        # print(f'result{result.json()}')
+        if result.status_code == 200:
+            print('Sucesso')
+            result_json = result.json()
+            print(result_json)
+            produtos_atualizados = result_json.get('produtos_atualizados')
+            self.importar_produtos(produtos_atualizados)
+        
+    
+
     def main(self):
         print('Sincronizando')
         self.load_configuracao()
         self.conectar()
-        self.exportar_dados_usuarios_via_api()
-        self.importar_dados_usuarios_via_api()
+        if self.importar_fotos:
+            self.atualizar_todas_fotos()
+        if self.exportar_vendas:
+            self.exportar_dados_usuarios_via_api()
+        if self.importar_usuarios:
+            self.importar_dados_usuarios()
+        if self.importar_produtos:
+            self.importar_dados_produto()
         self.desconectar()
         return
 
 
 if __name__ == '__main__':
     sincronizador = Sincronizador()
+    for arg in sys.argv[1:]:
+        if arg == 'importar_fotos':
+            sincronizador.importar_fotos = True
+        if arg == 'importar_usuarios':
+            sincronizador.importar_usuarios = True
+        if arg == 'importar_produtos':
+            sincronizador.importar_produtos = True
+        if arg == 'exportar_vendas':
+            sincronizador.exportar_vendas = True
     sincronizador.main()

@@ -55,6 +55,12 @@ class Impressor:
         # p.text(order)
         p.cut()
 
+        cur.execute(f"UPDATE orders SET contador_impressao = contador_impressao + 1 WHERE id = {order_id}")
+
+        cur.close()
+        self.conexao.commit()
+        
+
     def conectar(self):
         if not self.conexao or self.conexao.closed:
             self.conexao = psycopg2.connect(host=self.host, port=self.port,
