@@ -82,11 +82,11 @@ class Sincronizador:
         print(f'Download da foto do produto: {id}')
         response = requests.get(
             f'{self.endpoint}/imagem_publica_produto/v1/{id}/')
-        filename = response.headers.get('Content-Disposition')
-        if filename:
-            caminho = f'{caminho}/{filename}'
-        else:
-            caminho = f'{caminho}/{id}.jpg'
+        # filename = response.headers.get('Content-Disposition')
+        # if filename:
+        #     caminho = f'{caminho}/{filename}'
+        # else:
+        #     caminho = f'{caminho}/{id}.jpg'
         if response.status_code == 200:
             print(f'salvando imagem do produto {id} em {caminho}')
             with open(caminho, 'wb') as f:
