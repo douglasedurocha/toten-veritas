@@ -12,9 +12,9 @@ import sys
 class Sincronizador:
 
 
-    importar_fotos = False
-    importar_usuarios = False
-    importar_produtos = False
+    importar_imgs = False
+    importar_users = False
+    importar_prods = False
     exportar_vendas = False
 
     def load_configuracao(self):
@@ -310,13 +310,13 @@ class Sincronizador:
         print('Sincronizando')
         self.load_configuracao()
         self.conectar()
-        if self.importar_fotos:
+        if self.importar_imgs:
             self.atualizar_todas_fotos()
         if self.exportar_vendas:
             self.exportar_dados_usuarios_via_api()
-        if self.importar_usuarios:
+        if self.importar_users:
             self.importar_dados_usuarios()
-        if self.importar_produtos:
+        if self.importar_prods:
             self.importar_dados_produto()
         self.desconectar()
         return
@@ -324,13 +324,17 @@ class Sincronizador:
 
 if __name__ == '__main__':
     sincronizador = Sincronizador()
+    # importar_imgs = False
+    # importar_users = False
+    # importar_prods = False
+    # exportar_vendas = False
     for arg in sys.argv[1:]:
         if arg == 'importar_fotos':
-            sincronizador.importar_fotos = True
+            sincronizador.importar_imgs = True
         if arg == 'importar_usuarios':
-            sincronizador.importar_usuarios = True
+            sincronizador.importar_users = True
         if arg == 'importar_produtos':
-            sincronizador.importar_produtos = True
+            sincronizador.importar_prods = True
         if arg == 'exportar_vendas':
             sincronizador.exportar_vendas = True
     sincronizador.main()
